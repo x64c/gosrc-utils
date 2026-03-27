@@ -22,10 +22,16 @@ func (g *importGroups) total() int {
 	return len(g.stdlib) + len(g.others)
 }
 
-// sort sorts each group alphabetically in place.
+// sort sorts each group alphabetically by import path in place.
 func (g *importGroups) sort() {
-	sort.Strings(g.stdlib)
-	sort.Strings(g.others)
+	sortByImportPath(g.stdlib)
+	sortByImportPath(g.others)
+}
+
+func sortByImportPath(lines []string) {
+	sort.Slice(lines, func(i, j int) bool {
+		return extractImportPath(lines[i]) < extractImportPath(lines[j])
+	})
 }
 
 // formatLines returns the sorted import block as source lines.
